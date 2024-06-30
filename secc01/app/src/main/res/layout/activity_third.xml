@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ThirdActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp">
+
+        <EditText
+            android:id="@+id/editTextPhone"
+            android:layout_width="172dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="104dp"
+            android:layout_marginEnd="56dp"
+            android:layout_marginBottom="40dp"
+            android:ems="10"
+            android:hint="10 dígitos"
+            android:inputType="phone"
+            app:layout_constraintBottom_toTopOf="@+id/editTextWeb"
+            app:layout_constraintEnd_toStartOf="@+id/imageButtonPhone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imageButtonPhone"
+            android:layout_width="68dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="104dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Teléfono"
+            android:src="@android:drawable/ic_menu_call"
+            app:layout_constraintStart_toEndOf="@+id/editTextPhone"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextWeb"
+            android:layout_width="177dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="40dp"
+            android:ems="10"
+            android:hint="Nombre contacto"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
+
+        <ImageButton
+            android:id="@+id/imageButtonTextWeb"
+            android:layout_width="53dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="40dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Verificar"
+            android:minHeight="48dp"
+            android:src="@android:drawable/ic_menu_agenda"
+            app:layout_constraintStart_toEndOf="@+id/editTextWeb"
+            app:layout_constraintTop_toBottomOf="@+id/imageButtonPhone" />
+
+        <ImageButton
+            android:id="@+id/btnCamera"
+            android:layout_width="407dp"
+            android:layout_height="71dp"
+            android:layout_marginTop="300dp"
+            android:background="#e91e63"
+            android:contentDescription="Opciones de camara"
+            android:src="@android:drawable/ic_menu_camera"
+            android:text="Button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextWeb"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ExerciseABFragments</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="name_abfragment">ABFragment</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="afragment">AFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragmentAFragment</string>
+    <string name="bfragment">BFragment</string>
+</resources>
