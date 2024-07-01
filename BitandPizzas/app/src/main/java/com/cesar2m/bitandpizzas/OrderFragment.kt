@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.cesar2m.bitandpizzas.databinding.FragmentOrderBinding
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -16,11 +17,18 @@ import com.google.android.material.snackbar.Snackbar
 
 class OrderFragment : Fragment() {
 
+    private var _binding: FragmentOrderBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater, container: ViewGroup?
+        , savedInstanceState: Bundle?): View? {
 
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_order, container, false)
+        _binding = FragmentOrderBinding.inflate(inflater,container,false)
+        val view = binding.root
+
+
         val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
@@ -28,8 +36,7 @@ class OrderFragment : Fragment() {
         val fab = view.findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener{
 
-            val pizzasGroup = view.findViewById<RadioGroup>(R.id.pizza_group)
-            val pizzaType = pizzasGroup.checkedRadioButtonId
+            val pizzaType = binding.pizzaGroup.checkedRadioButtonId
 
             if(pizzaType == -1){
 
@@ -38,19 +45,19 @@ class OrderFragment : Fragment() {
 
             }else{
 
+
                 var text = (when(pizzaType){ R.id.radio_mexicana -> "Mexicana" else -> "Hawaiana"})
-                val parmesan = view.findViewById<Chip>(R.id.chip_parmesano)
+                val parmesan = binding.chipParmesano
                 text += if (parmesan.isChecked) " extra parmesano" else ""
-                val chiliOil = view.findViewById<Chip>(R.id.chip_aguacate)
+                val chiliOil = binding.chipAguacate
                 text += if (chiliOil.isChecked)  " extra agucate " else ""
                 val textMsj = "¡¡¡ "  + text + "!!!"
                 Snackbar.make(fab,textMsj, Snackbar.LENGTH_SHORT).setAction("Siempre NO"){
 
-                    val pizzasGroup = view.findViewById<RadioGroup>(R.id.pizza_group)
+                    val pizzasGroup = binding.pizzaGroup
                     pizzasGroup.clearCheck()
-                    val chipGroupExtras = view.findViewById<ChipGroup>(R.id.chip_group_extras)
+                    val chipGroupExtras = binding.chipGroupExtras
                     chipGroupExtras.clearCheck()
-
 
                     Toast.makeText(activity, "Deshacemos tu selección " +   ("\ud83d\ude01"), Toast.LENGTH_SHORT).show()
 
@@ -62,6 +69,11 @@ class OrderFragment : Fragment() {
 
 
         return view
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }
