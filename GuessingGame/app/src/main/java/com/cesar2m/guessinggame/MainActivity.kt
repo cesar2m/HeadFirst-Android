@@ -1,4 +1,4 @@
-package com.example.guessinggame
+package com.cesar2m.guessinggame
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
