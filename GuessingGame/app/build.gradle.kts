@@ -1,8 +1,10 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-
+    id("androidx.navigation.safeargs.kotlin")//No se debe de mover esta declaración
 }
+
+
 
 android {
     namespace = "com.cesar2m.guessinggame"
@@ -51,4 +53,5 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+
 }
