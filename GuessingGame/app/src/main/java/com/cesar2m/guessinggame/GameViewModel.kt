@@ -1,32 +1,33 @@
 package com.cesar2m.guessinggame
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class GameViewModel :  ViewModel() {
 
-    val palabras = createListOfWords()
-    val palabraSecreta = palabras.random().uppercase()
-    var palabraSecretaDisplay = ""
-    var correcatAdivinacion = ""
-    var incorrectaAdivinacion = ""
-    var vidas = 5
+    val listWords = createListOfWords()
+    val secretWord = listWords.random().uppercase()
+    var secretWordDisplay = MutableLiveData<String>()
+    var correctGuess = ""
+    var incorrectGuesses = MutableLiveData<String>("")
+    var lives = MutableLiveData<Int>(5)
 
     init {
-        palabraSecretaDisplay = deriveSecretWordDisplay()
+        secretWordDisplay.value = deriveSecretWordDisplay()
     }
 
 
     fun deriveSecretWordDisplay() : String {
         var display = ""
-        palabraSecreta.forEach {
+        secretWord.forEach {
             display += checkLetter(it.toString())
         }
         return display
     }
 
     fun checkLetter(chr : String ) =
-        when (correcatAdivinacion.contains(chr)){
+        when (correctGuess.contains(chr)){
             true -> chr
             false -> "_"
         }
@@ -35,25 +36,25 @@ class GameViewModel :  ViewModel() {
     fun makeGuess(guess:String){
 
         if (guess.length == 1){
-            if (palabraSecreta.contains(guess)){
-                correcatAdivinacion += guess
-                palabraSecretaDisplay = deriveSecretWordDisplay()
+            if (secretWord.contains(guess)){
+                correctGuess += guess
+                secretWordDisplay.value = deriveSecretWordDisplay()
             }else{
-                incorrectaAdivinacion += "$guess "
-                vidas--
+                incorrectGuesses.value += "$guess "
+                lives.value = lives.value?.minus(1) //resta 1
             }
         }
     }
 
-    fun isWon() = palabraSecreta.equals(palabraSecretaDisplay, true)
+    fun isWon() = secretWord.equals(secretWordDisplay.value, true)
 
-    fun isLost() = vidas <= 0
+    fun isLost() = lives.value ?: 0 <= 0
 
     fun wonLostMessage(): String {
         var message = ""
         if (isWon()) message = "¡Ganaste :>) ! "
         else if (isLost()) message = "Perdiste :<("
-        message += " La palabra secreta fue $palabraSecreta."
+        message += " La palabra secreta fue $secretWord."
         return message
     }
 

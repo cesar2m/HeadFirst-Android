@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.cesar2m.guessinggame.databinding.FragmentGameBinding
@@ -29,13 +30,26 @@ class GameFragment : Fragment() {
         val view = binding.root
         gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
-        updateScreen()
+        //updateScreen()//Se deja de usar cuando se implementó LiveData en GameViewModel
+
+        gameViewModel.incorrectGuesses.observe(viewLifecycleOwner, Observer{ newValue ->
+            binding.adivinacionIncorrecta.text = "Incorrecta adivinación: $newValue"
+        })
+
+        gameViewModel.lives.observe(viewLifecycleOwner, Observer { newValue ->
+            binding.vidas.text = "Te quedan ${newValue} aún."
+        })
+
+        gameViewModel.secretWordDisplay.observe(viewLifecycleOwner, Observer { newValue ->
+            binding.palabra.text = newValue
+        })
+
 
         binding.adivinaButton.setOnClickListener(){
 
             gameViewModel.makeGuess(binding.adivinacion.text.toString().uppercase())
             binding.adivinacion.text = null
-            updateScreen()
+            //updateScreen() //Se deja de usar cuando se implementó LiveData en GameViewModel
 
             if(gameViewModel.isWon() || gameViewModel.isLost()){
                 val action = GameFragmentDirections.actionGameFragmentToResultFragment(gameViewModel.wonLostMessage())
@@ -50,11 +64,13 @@ class GameFragment : Fragment() {
         _binding = null
     }
 
+    /*
+    //No es necesrio desde que se implementó LiveData en ViewModel
     fun updateScreen(){
-        binding.palabra.text = gameViewModel.palabraSecretaDisplay
-        binding.vidas.text = "Te quedan ${gameViewModel.vidas} ."
-        binding.adivinacionIncorrecta.text = "Incorrecta adivinación: ${gameViewModel.incorrectaAdivinacion}"
-    }
+        binding.palabra.text = gameViewModel.secretWordDisplay
+        binding.vidas.text = "Te quedan ${gameViewModel.lives} ."
+        binding.adivinacionIncorrecta.text = "Incorrecta adivinación: ${gameViewModel.incorrectGuesses}"
+    }*/
 
 
 
