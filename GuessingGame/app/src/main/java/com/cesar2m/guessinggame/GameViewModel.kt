@@ -1,20 +1,33 @@
 package com.cesar2m.guessinggame
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class GameViewModel :  ViewModel() {
 
-    val listWords = createListOfWords()
-    val secretWord = listWords.random().uppercase()
-    var secretWordDisplay = MutableLiveData<String>()
-    var correctGuess = ""
-    var incorrectGuesses = MutableLiveData<String>("")
-    var lives = MutableLiveData<Int>(5)
+    private val listWords = createListOfWords()
+    private val secretWord = listWords.random().uppercase()
+    private var correctGuess = ""
+
+    private var _secretWordDisplay = MutableLiveData<String>()
+    val secretWordDisplay: LiveData<String>
+        get() = _secretWordDisplay
+    private var _incorrectGuesses = MutableLiveData<String>("")
+    val incorrectGuesses: LiveData<String>
+        get() = _incorrectGuesses
+    private var _lives = MutableLiveData<Int>(5)
+    val lives: LiveData<Int>
+        get() = _lives
+
+    private var _gameOver = MutableLiveData<Boolean>()
+    val gameOver: LiveData<Boolean>
+        get() = _gameOver
 
     init {
-        secretWordDisplay.value = deriveSecretWordDisplay()
+        _secretWordDisplay.value = deriveSecretWordDisplay()
+        _gameOver.value = false
     }
 
 
@@ -36,19 +49,30 @@ class GameViewModel :  ViewModel() {
     fun makeGuess(guess:String){
 
         if (guess.length == 1){
+
             if (secretWord.contains(guess)){
                 correctGuess += guess
-                secretWordDisplay.value = deriveSecretWordDisplay()
+                _secretWordDisplay.value = deriveSecretWordDisplay()
             }else{
-                incorrectGuesses.value += "$guess "
-                lives.value = lives.value?.minus(1) //resta 1
+                _incorrectGuesses.value += "$guess "
+                _lives.value = _lives.value?.minus(1) //resta 1
             }
+
+            checkGameOver()
         }
     }
 
+    fun checkGameOver(){
+
+        if (isWon()){
+            _gameOver.value = true
+        }else if(isLost()){
+            _gameOver.value = true
+        }
+    }
     fun isWon() = secretWord.equals(secretWordDisplay.value, true)
 
-    fun isLost() = lives.value ?: 0 <= 0
+    fun isLost() = _lives.value ?: 0 <= 0
 
     fun wonLostMessage(): String {
         var message = ""
@@ -59,7 +83,7 @@ class GameViewModel :  ViewModel() {
     }
 
     fun createListOfWords(): List<String> {
-        return listOf<String>("Android", "Activity", "Fragment", "Cesar", "Isabel")
+        return listOf<String>("Android", "Linux", "Windows", "Pan","Mango", "Cesar", "Isabel")
     }
 
     override fun onCleared() {

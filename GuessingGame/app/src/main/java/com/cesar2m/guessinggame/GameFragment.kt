@@ -44,6 +44,14 @@ class GameFragment : Fragment() {
             binding.palabra.text = newValue
         })
 
+        gameViewModel.gameOver.observe(viewLifecycleOwner, Observer{newValue ->
+            if(newValue) {
+                val action = GameFragmentDirections
+                    .actionGameFragmentToResultFragment(gameViewModel.wonLostMessage())
+                view.findNavController().navigate(action)
+            }
+        })
+
 
         binding.adivinaButton.setOnClickListener(){
 
@@ -51,10 +59,6 @@ class GameFragment : Fragment() {
             binding.adivinacion.text = null
             //updateScreen() //Se deja de usar cuando se implementó LiveData en GameViewModel
 
-            if(gameViewModel.isWon() || gameViewModel.isLost()){
-                val action = GameFragmentDirections.actionGameFragmentToResultFragment(gameViewModel.wonLostMessage())
-                view.findNavController().navigate(action)
-            }
         }
         return view
     }
