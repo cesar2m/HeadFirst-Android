@@ -30,7 +30,9 @@ class ResultFragment : Fragment() {
         val result  = ResultFragmentArgs.fromBundle(requireArguments()).result
         viewModelFactory = ResultViewModelFactory(result)
         viewModel = ViewModelProvider(this, viewModelFactory).get(ResultViewModel::class.java)
-        binding.wonLost.text = viewModel.result
+        binding.resultViewModel = viewModel //para acceder a los datos desde el diseño-
+        //binding.wonLost.text = viewModel.result //ya se puede acceder este resultado desde la vista en la línea de arriba
+
 
         binding.newGameButton.setOnClickListener {
             view.findNavController().navigate(R.id.action_resultFragment_to_gameFragment)

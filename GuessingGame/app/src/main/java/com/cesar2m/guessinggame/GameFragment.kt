@@ -35,15 +35,12 @@ class GameFragment : Fragment() {
         gameViewModel.incorrectGuesses.observe(viewLifecycleOwner, Observer{ newValue ->
             binding.adivinacionIncorrecta.text = "Incorrecta adivinación: $newValue"
         })
-
         gameViewModel.lives.observe(viewLifecycleOwner, Observer { newValue ->
             binding.vidas.text = "Te quedan ${newValue} aún."
         })
-
         gameViewModel.secretWordDisplay.observe(viewLifecycleOwner, Observer { newValue ->
             binding.palabra.text = newValue
         })
-
         gameViewModel.gameOver.observe(viewLifecycleOwner, Observer{newValue ->
             if(newValue) {
                 val action = GameFragmentDirections
