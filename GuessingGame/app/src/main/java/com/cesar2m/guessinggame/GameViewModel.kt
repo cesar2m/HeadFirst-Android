@@ -12,24 +12,19 @@ class GameViewModel :  ViewModel() {
     private var correctGuess = ""
 
     private var _secretWordDisplay = MutableLiveData<String>()
-    val secretWordDisplay: LiveData<String>
-        get() = _secretWordDisplay
+    val secretWordDisplay: LiveData<String> get() = _secretWordDisplay
     private var _incorrectGuesses = MutableLiveData<String>("")
-    val incorrectGuesses: LiveData<String>
-        get() = _incorrectGuesses
+    val incorrectGuesses: LiveData<String> get() = _incorrectGuesses
     private var _lives = MutableLiveData<Int>(5)
-    val lives: LiveData<Int>
-        get() = _lives
+    val lives: LiveData<Int> get() = _lives
 
     private var _gameOver = MutableLiveData<Boolean>()
-    val gameOver: LiveData<Boolean>
-        get() = _gameOver
+    val gameOver: LiveData<Boolean> get() = _gameOver
 
     init {
         _secretWordDisplay.value = deriveSecretWordDisplay()
         _gameOver.value = false
     }
-
 
     fun deriveSecretWordDisplay() : String {
         var display = ""

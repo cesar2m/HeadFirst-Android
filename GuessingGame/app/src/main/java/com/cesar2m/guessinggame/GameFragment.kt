@@ -29,9 +29,11 @@ class GameFragment : Fragment() {
         _binding = FragmentGameBinding.inflate(inflater,container,false)
         val view = binding.root
         gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        binding.gameViewModelLayout = gameViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         //updateScreen()//Se deja de usar cuando se implementó LiveData en GameViewModel
-
+/* Se dejan de usar por la línea: binding.lifecycleOwner = viewLifecycleOwner
         gameViewModel.incorrectGuesses.observe(viewLifecycleOwner, Observer{ newValue ->
             binding.adivinacionIncorrecta.text = "Incorrecta adivinación: $newValue"
         })
@@ -40,7 +42,7 @@ class GameFragment : Fragment() {
         })
         gameViewModel.secretWordDisplay.observe(viewLifecycleOwner, Observer { newValue ->
             binding.palabra.text = newValue
-        })
+        })*/
         gameViewModel.gameOver.observe(viewLifecycleOwner, Observer{newValue ->
             if(newValue) {
                 val action = GameFragmentDirections
