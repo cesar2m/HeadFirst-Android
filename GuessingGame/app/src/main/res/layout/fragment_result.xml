@@ -31,5 +31,6 @@
             android:layout_gravity="center"
             android:text="Volver a jugar"/>
 
+
     </LinearLayout>
 </layout>

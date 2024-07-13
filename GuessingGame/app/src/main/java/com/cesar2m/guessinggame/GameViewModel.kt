@@ -85,6 +85,8 @@ class GameViewModel :  ViewModel() {
         Log.i("GameViewModel",  "ViewModel cleared")
     }
 
-
+    fun finishGame(){
+        _gameOver.value = true
+    }
 
 }
