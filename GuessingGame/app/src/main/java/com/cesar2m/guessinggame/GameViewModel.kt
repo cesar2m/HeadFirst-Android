@@ -1,6 +1,9 @@
 package com.cesar2m.guessinggame
 
+import android.opengl.GLES30
+import android.os.SystemClock
 import android.util.Log
+import android.widget.Chronometer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,9 +24,18 @@ class GameViewModel :  ViewModel() {
     private var _gameOver = MutableLiveData<Boolean>()
     val gameOver: LiveData<Boolean> get() = _gameOver
 
+    private var _firstAttemp = MutableLiveData<Boolean>()
+    val firstAttemp: LiveData<Boolean> get() = _firstAttemp
+
+    private var  _timeTotal = MutableLiveData<Long>()
+    val timeTotal:  LiveData<Long> get() = _timeTotal
+
+
     init {
         _secretWordDisplay.value = deriveSecretWordDisplay()
         _gameOver.value = false
+        _firstAttemp.value = true
+        _timeTotal.value = 0L
     }
 
     fun deriveSecretWordDisplay() : String {
@@ -41,7 +53,13 @@ class GameViewModel :  ViewModel() {
         }
 
 
-    fun makeGuess(guess:String){
+    fun makeGuess(guess:String , cronometro: Chronometer){
+
+        if(_firstAttemp.value == true) {
+            _firstAttemp.value = false
+            cronometro.base = SystemClock.elapsedRealtime()
+            cronometro.start()
+        }
 
         if (guess.length == 1){
 
@@ -53,8 +71,13 @@ class GameViewModel :  ViewModel() {
                 _lives.value = _lives.value?.minus(1) //resta 1
             }
 
+            checkChronometer(cronometro)
             checkGameOver()
         }
+    }
+
+    fun checkChronometer(cronometro: Chronometer) {
+        _timeTotal.value  =  (SystemClock.elapsedRealtime() - cronometro.base).toLong()
     }
 
     fun checkGameOver(){
@@ -70,13 +93,22 @@ class GameViewModel :  ViewModel() {
     fun isLost() = _lives.value ?: 0 <= 0
 
     fun wonLostMessage(): String {
-        var message = ""
-        if (isWon()) message = "¡Ganaste :>) ! "
-        else if (isLost()) message = "Perdiste :<("
-        message += " La palabra secreta fue $secretWord."
+        var emojiSmile:  Int = 0x1F60E
+        var emojiSad:  Int = 0x1F61B
+        var emojiSmollSmile:  Int = 0x1F605
+        var message = "La palabra secreta fue $secretWord."
+        if (isWon()){
+            message = "¡Ganaste " + getEmoji(emojiSmile)  + " ! "  +message
+        } else  {
+            message = getEmoji(emojiSad) + " Perdiste  " + getEmoji(emojiSmollSmile)  + message
+
+        }
         return message
     }
 
+    fun getEmoji(unicode : Int) : String{
+        return String(Character.toChars(unicode))
+    }
     fun createListOfWords(): List<String> {
         return listOf<String>("Android", "Linux", "Windows", "Pan","Mango", "Cesar", "Isabel")
     }
@@ -87,6 +119,7 @@ class GameViewModel :  ViewModel() {
 
     fun finishGame(){
         _gameOver.value = true
+
     }
 
 }

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.cesar2m.guessinggame.databinding.FragmentGameBinding
@@ -28,11 +29,12 @@ class ResultFragment : Fragment() {
         val view = binding.root
 
         val result  = ResultFragmentArgs.fromBundle(requireArguments()).result
-        viewModelFactory = ResultViewModelFactory(result)
+        val result2  = ResultFragmentArgs.fromBundle(requireArguments()).result2
+
+        viewModelFactory = ResultViewModelFactory(result, result2)
         viewModel = ViewModelProvider(this, viewModelFactory).get(ResultViewModel::class.java)
         binding.resultViewModel = viewModel //para acceder a los datos desde el diseño-
         //binding.wonLost.text = viewModel.result //ya se puede acceder este resultado desde la vista en la línea de arriba
-
 
         binding.newGameButton.setOnClickListener {
             view.findNavController().navigate(R.id.action_resultFragment_to_gameFragment)
@@ -44,6 +46,8 @@ class ResultFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 
 
 }

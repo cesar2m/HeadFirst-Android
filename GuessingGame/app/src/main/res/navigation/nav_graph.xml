@@ -14,20 +14,24 @@
         <action
             android:id="@+id/action_gameFragment_to_resultFragment"
             app:destination="@id/resultFragment"
-            app:popUpTo="@id/gameFragment"
             app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/resultFragment"
         android:name="com.cesar2m.guessinggame.ResultFragment"
         android:label="fragment_result"
+        app:popUpTo="@id/gameFragment"
         tools:layout="@layout/fragment_result" >
         <argument
             android:name="result"
             app:argType="string"/>
+        <argument
+            android:name="result2"
+            app:argType="long"
+             />
         <action
             android:id="@+id/action_resultFragment_to_gameFragment"
             app:destination="@id/gameFragment"
-            app:popUpTo="@id/gameFragment"/>
+            />
     </fragment>
 </navigation>
