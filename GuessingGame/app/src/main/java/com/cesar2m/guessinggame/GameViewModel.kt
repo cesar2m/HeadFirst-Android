@@ -8,16 +8,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class GameViewModel :  ViewModel() {
+class GameViewModel(listWordsToGame: Array<String>) :  ViewModel() {
 
-    private val listWords = createListOfWords()
+
+    private val listWords = createListOfWords(listWordsToGame)
     private val secretWord = listWords.random().uppercase()
     private var correctGuess = ""
 
+
     private var _secretWordDisplay = MutableLiveData<String>()
     val secretWordDisplay: LiveData<String> get() = _secretWordDisplay
+
     private var _incorrectGuesses = MutableLiveData<String>("")
     val incorrectGuesses: LiveData<String> get() = _incorrectGuesses
+
     private var _lives = MutableLiveData<Int>(5)
     val lives: LiveData<Int> get() = _lives
 
@@ -29,7 +33,6 @@ class GameViewModel :  ViewModel() {
 
     private var  _timeTotal = MutableLiveData<Long>()
     val timeTotal:  LiveData<Long> get() = _timeTotal
-
 
     init {
         _secretWordDisplay.value = deriveSecretWordDisplay()
@@ -109,9 +112,22 @@ class GameViewModel :  ViewModel() {
     fun getEmoji(unicode : Int) : String{
         return String(Character.toChars(unicode))
     }
-    fun createListOfWords(): List<String> {
-        return listOf<String>("Android", "Linux", "Windows", "Pan","Mango", "Cesar", "Isabel")
+    fun createListOfWords(listWordsToGame: Array<String>): List<String> {
+
+        var mapListWords: HashMap<TopicWorrdsEnum,ArrayList<String>> = createTopics()
+        var listaPalabrasFinal : ArrayList<String> =  arrayListOf()
+        var listTopics: ArrayList<TopicWorrdsEnum> = arrayListOf()
+
+        listWordsToGame.forEach { wg -> listTopics.add(TopicWorrdsEnum.valueOf(wg)) }
+        listTopics.forEach{ t -> listaPalabrasFinal.addAll(mapListWords.get(t) as Collection<String>)}
+
+        return listaPalabrasFinal
     }
+
+    fun containsTopic(valor : String): Boolean {
+        return TopicWorrdsEnum.entries.contains(TopicWorrdsEnum.valueOf(valor))
+    }
+
 
     override fun onCleared() {
         Log.i("GameViewModel",  "ViewModel cleared")
@@ -119,7 +135,25 @@ class GameViewModel :  ViewModel() {
 
     fun finishGame(){
         _gameOver.value = true
-
     }
+
+    fun createTopics() : HashMap<TopicWorrdsEnum,ArrayList<String>> {
+
+        val comidas: ArrayList<String> = arrayListOf("Frijoles","Chiles Rellenos","Papas Fritas","Tacos","Tortas", "Tamales")
+        val frutas: ArrayList<String> = arrayListOf("Mango","Naranja","Aguacate","Durazno","Piña","Platano", "Papaya","Tuna")
+        val nombrePropios: ArrayList<String> = arrayListOf("Cesar","Isabel","Maria","Juan","Magadalena","Ana", "Noe","Victorino")
+        val so: ArrayList<String> = arrayListOf("Linux","Windows","Deepin","iOS","Android","Unix")
+
+        var topics: HashMap<TopicWorrdsEnum,ArrayList<String>> = mapOf<TopicWorrdsEnum,ArrayList<String>> (
+            TopicWorrdsEnum.FOOD to comidas,
+            TopicWorrdsEnum.FRUIT to frutas,
+            TopicWorrdsEnum.FIRST_NAME to nombrePropios,
+            TopicWorrdsEnum.SO to so
+        ) as HashMap<TopicWorrdsEnum, ArrayList<String>>
+
+        return topics
+    }
+
+
 
 }

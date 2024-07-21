@@ -37,7 +37,7 @@ class ResultFragment : Fragment() {
         //binding.wonLost.text = viewModel.result //ya se puede acceder este resultado desde la vista en la línea de arriba
 
         binding.newGameButton.setOnClickListener {
-            view.findNavController().navigate(R.id.action_resultFragment_to_gameFragment)
+            view.findNavController().navigate(R.id.action_resultFragment_to_chooseTopicFragment)
         }
         return view
     }
@@ -46,6 +46,8 @@ class ResultFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 
 
 

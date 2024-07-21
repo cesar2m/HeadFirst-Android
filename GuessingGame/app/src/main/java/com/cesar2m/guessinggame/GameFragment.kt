@@ -25,6 +25,7 @@ class GameFragment : Fragment() {
     private var _binding: FragmentGameBinding? = null
     private val binding get() = _binding!!
     lateinit var gameViewModel: GameViewModel
+    lateinit var gameViewModelFactory: GameViewModelFactory
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,10 +35,14 @@ class GameFragment : Fragment() {
 
         _binding = FragmentGameBinding.inflate(inflater,container,false)
         val view = binding.root
-        gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        var listWordsToPlay  = GameFragmentArgs.fromBundle(requireArguments()).palabrasParaJugar
+        gameViewModelFactory = GameViewModelFactory(listWordsToPlay as Array<String>)
+        gameViewModel = ViewModelProvider(this,gameViewModelFactory).get(GameViewModel::class.java)
         binding.gameViewModelLayout = gameViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.cronometro.stop()
+
+
 
 
         //updateScreen()//Se deja de usar cuando se implementó LiveData en GameViewModel
@@ -56,7 +61,7 @@ class GameFragment : Fragment() {
 
                 var duracion: Long? = gameViewModel.timeTotal.value as? Long?
                 val action = GameFragmentDirections
-                    .actionGameFragmentToResultFragment(gameViewModel.wonLostMessage(), duracion as Long)
+                    .actionGameFragmentToResultFragment (gameViewModel.wonLostMessage(), duracion as Long)
                 view.findNavController().navigate(action)
 
             }
