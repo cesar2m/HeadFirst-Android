@@ -10,9 +10,9 @@ data class Task (
     @PrimaryKey(autoGenerate = true)
     var taskId: Long = 0L,
 
-    @ColumnInfo(name = "taskl_name")
+    @ColumnInfo(name = "task_name")
     var taskName: String = "",
 
-    @ColumnInfo(name = "taskl_done")
+    @ColumnInfo(name = "task_done")
     var taskDone: Boolean = false
 )

@@ -4,6 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".TaskFragment">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.cesar2m.task.TaskViewModel" />
+
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,7 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:hint="Nombre de tarea aquí" />
+            android:hint="Nombre de tarea aquí"
+            android:text="@={viewModel.newTaskName}"/>
 
         <Button
             android:id="@+id/save_button"
@@ -24,12 +32,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Guardar"
-            />
+            android:onClick="@{() -> viewModel.addTask()}"/>
 
         <TextView
             android:id="@+id/tasks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="Aquí irán las tareas"
             />
 
     </LinearLayout>
