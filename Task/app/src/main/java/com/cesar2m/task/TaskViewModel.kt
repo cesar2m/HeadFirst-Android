@@ -11,31 +11,34 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-
+import java.util.stream.Collectors
 
 
 class TaskViewModel(val dao: TaskDao) : ViewModel() {
 
     var newTaskName = ""
-
-
+    var i: Long = 0
+    val arrayListTask: ArrayList<Task> = arrayListOf()
 
     private var _allTasks = MutableLiveData<List<Task>>()
     val allTasks : LiveData<List<Task>> get() = _allTasks
 
 
-
-
     fun addTask(){
-        viewModelScope.launch {
 
+        viewModelScope.launch {
             val task = Task()
             task.taskName = newTaskName
-            var listTareasFOund: List<Task> = if(null == dao.getAll().value)  emptyList() else  dao.getAll().value as List<Task>
             dao.insert(task)
         }
-        _allTasks.value = dao.getAll().value
 
+        viewModelScope.launch {
+            if(null ==  dao.getAll().value){
+                agregateNewTask()
+            }else {
+                _allTasks.value = dao.getAll().value
+            }
+        }
     }
 
     fun formatTasks(listTasks: List<Task>): String {
@@ -61,5 +64,11 @@ class TaskViewModel(val dao: TaskDao) : ViewModel() {
         return formatTasks(listAllTasks)
     }
 
+    fun agregateNewTask(){
+        i += 1
+        val taskN : Task = Task(i,newTaskName ,false )
+        arrayListTask.add(taskN)
+        _allTasks.value = arrayListTask.toList()
+    }
 
 }

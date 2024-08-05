@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.cesar2m.task.databinding.FragmentTaskBinding
@@ -32,6 +33,7 @@ class TaskFragment : Fragment() {
 
         taskViewModel.allTasks.observe(viewLifecycleOwner, Observer {newValue ->
             binding.tasks.text = taskViewModel.formatAllTasks()
+            var liveTask: LiveData<List<Task>> =  taskViewModel.dao.getAll()
         })
 
 
