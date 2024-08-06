@@ -31,11 +31,6 @@ class TaskFragment : Fragment() {
         binding?.viewModel = taskViewModel
         binding?.lifecycleOwner = viewLifecycleOwner
 
-        taskViewModel.allTasks.observe(viewLifecycleOwner, Observer {newValue ->
-            binding.tasks.text = taskViewModel.formatAllTasks()
-            var liveTask: LiveData<List<Task>> =  taskViewModel.dao.getAll()
-        })
-
 
         return view;
     }

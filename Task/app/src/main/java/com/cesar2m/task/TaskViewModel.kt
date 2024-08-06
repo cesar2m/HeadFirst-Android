@@ -1,6 +1,7 @@
 package com.cesar2m.task
 
 
+import androidx.annotation.NonNull
 import androidx.arch.core.util.Function
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -17,6 +18,11 @@ import java.util.stream.Collectors
 class TaskViewModel(val dao: TaskDao) : ViewModel() {
 
     var newTaskName = ""
+    private val tasks = dao.getAll()
+    val tasksString = map(tasks){
+        tasks -> formatTasks(tasks as List<Task>)
+    }
+
     var i: Long = 0
     val arrayListTask: ArrayList<Task> = arrayListOf()
 
@@ -32,13 +38,7 @@ class TaskViewModel(val dao: TaskDao) : ViewModel() {
             dao.insert(task)
         }
 
-        viewModelScope.launch {
-            if(null ==  dao.getAll().value){
-                agregateNewTask()
-            }else {
-                _allTasks.value = dao.getAll().value
-            }
-        }
+
     }
 
     fun formatTasks(listTasks: List<Task>): String {
@@ -64,11 +64,21 @@ class TaskViewModel(val dao: TaskDao) : ViewModel() {
         return formatTasks(listAllTasks)
     }
 
-    fun agregateNewTask(){
-        i += 1
-        val taskN : Task = Task(i,newTaskName ,false )
-        arrayListTask.add(taskN)
-        _allTasks.value = arrayListTask.toList()
+    /**
+     * Implementación de una versión que no pude importar para está versión de Android.
+     * Se supone que era para la lifecicle 2.6.0 al menos, pero nunca cargo, solo en versiones
+     * menores como la que viene de ejemplo en el libro. NOTA: Tome la función de la clase original
+     * y la transformé a Kotlin.
+     */
+    fun <X, Y> map(
+        source: LiveData<X>,
+        mapFunction: (X?) -> Y
+    ): LiveData<Y> {
+        val result = MediatorLiveData<Y>()
+        result.addSource(source, Observer { x ->
+            result.value = mapFunction(x)
+        })
+        return result
     }
 
 }
