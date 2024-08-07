@@ -18,10 +18,7 @@ import java.util.stream.Collectors
 class TaskViewModel(val dao: TaskDao) : ViewModel() {
 
     var newTaskName = ""
-    private val tasks = dao.getAll()
-    val tasksString = map(tasks){
-        tasks -> formatTasks(tasks as List<Task>)
-    }
+    val tasks = dao.getAll()
 
     var i: Long = 0
     val arrayListTask: ArrayList<Task> = arrayListOf()
