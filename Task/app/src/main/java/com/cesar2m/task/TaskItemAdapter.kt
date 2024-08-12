@@ -5,42 +5,34 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.cesar2m.task.databinding.TaskItemBinding
 
-class TaskItemAdapter : RecyclerView.Adapter<TaskItemAdapter.TaskItemViewHolder>() {
-
-    var data = listOf<Task>()
-        set(value){
-            field = value
-            notifyDataSetChanged()
-        }
-    override fun getItemCount() = data.size
-
-    override fun onBindViewHolder(holder: TaskItemViewHolder, position: Int){
-        val item = data[position]
-        holder.bind(item)
-    }
+class TaskItemAdapter : ListAdapter<Task,TaskItemAdapter.TaskItemViewHolder>(TaskDiffItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
             : TaskItemViewHolder = TaskItemViewHolder.inflateFrom(parent)
 
-    class TaskItemViewHolder(val rootView: CardView): RecyclerView.ViewHolder (rootView){
+    override fun onBindViewHolder(holder: TaskItemViewHolder, position: Int){
+        val item = getItem(position)
+        holder.bind(item)
+    }
 
-        val taskName = rootView.findViewById<TextView>(R.id.task_name)
-        val taskDone = rootView.findViewById<CheckBox>(R.id.task_done)
+    class TaskItemViewHolder(val binding: TaskItemBinding): RecyclerView.ViewHolder (binding.root){
 
         companion object{
             fun inflateFrom(parent: ViewGroup): TaskItemViewHolder{
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val view = layoutInflater.inflate(R.layout.task_item, parent, false) as CardView
-                return TaskItemViewHolder(view)
+                val binding = TaskItemBinding.inflate(layoutInflater, parent, false)
+                //val view = layoutInflater.inflate(R.layout.task_item, parent, false) as CardView //Dejo de usarse la usar TaskItemBinding
+                return TaskItemViewHolder(binding)
             }
         }
 
 
         fun bind(item: Task){
-            taskName.text = item.taskName
-            taskDone.isChecked = item.taskDone
+            binding.task = item
         }
 
 
