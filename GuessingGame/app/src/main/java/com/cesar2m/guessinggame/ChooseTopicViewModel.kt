@@ -4,18 +4,32 @@ import android.widget.CheckBox
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
-class ChooseTopicViewModel  :  ViewModel() {
+class ChooseTopicViewModel(val topicWordDao: TopicWordDao)  :  ViewModel() {
 
 
     private var _listWordsToGame= MutableLiveData<ArrayList<TopicWorrdsEnum>>()
     val listWordsToGame: LiveData<ArrayList<TopicWorrdsEnum>> get() = _listWordsToGame
 
+    val listTopics = topicWordDao.findAllTopic()
     init {
 
+        addInitTopic()
         _listWordsToGame.value = ArrayList<TopicWorrdsEnum>()
+
     }
 
+    fun addInitTopic(){
+        viewModelScope.launch {
+            val topic = Topic()
+            topic.topicName = "Frutas y verduras"
+            topic.activo = true
+
+            topicWordDao.save(topic)
+        }
+    }
     fun addFruitToList(isAdd: Boolean){
 
         if(isAdd) {

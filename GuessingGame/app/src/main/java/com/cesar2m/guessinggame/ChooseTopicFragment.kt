@@ -18,12 +18,20 @@ class ChooseTopicFragment : Fragment() {
     private val binding get() = _binding!!
     lateinit var chooseTopicViewModel: ChooseTopicViewModel
 
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_choose_topic, container, false)
         _binding = FragmentChooseTopicBinding.inflate(inflater,container, false)
         var view = binding.root
-        chooseTopicViewModel = ViewModelProvider(this).get(ChooseTopicViewModel::class.java)
+
+        val application = requireNotNull(this.activity).application
+        val topicWordDao = GuessingGameDataBase.getInstance(application).topicWordDao
+        val  chooseTopicViewModelFactory  = ChooseTopicViewModelFactory(topicWordDao)
+
+
+        chooseTopicViewModel = ViewModelProvider(this, chooseTopicViewModelFactory).get(ChooseTopicViewModel::class.java)
 
         binding.checkFrutas.setOnClickListener(){
             var isAdd = if(binding.checkFrutas.isChecked)  true else false

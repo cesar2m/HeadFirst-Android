@@ -17,6 +17,7 @@ import java.util.stream.Collectors
 
 class TaskViewModel(val dao: TaskDao) : ViewModel() {
 
+
     private val _navigateToTask = MutableLiveData<Long?>()
     val navigateToTask: LiveData<Long?>
         get() = _navigateToTask
