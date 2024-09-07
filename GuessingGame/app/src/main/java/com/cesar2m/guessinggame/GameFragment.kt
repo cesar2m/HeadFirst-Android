@@ -14,6 +14,7 @@ import com.cesar2m.guessinggame.databinding.FragmentGameBinding
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
+import kotlin.collections.listOf
 
 /**
  * A simple [Fragment] subclass.
@@ -35,27 +36,24 @@ class GameFragment : Fragment() {
 
         _binding = FragmentGameBinding.inflate(inflater,container,false)
         val view = binding.root
-        var listWordsToPlay  = GameFragmentArgs.fromBundle(requireArguments()).palabrasParaJugar
-        gameViewModelFactory = GameViewModelFactory(listWordsToPlay as Array<String>)
+
+        val application = requireNotNull(this.activity).application
+        val topicWordDao = GuessingGameDataBase.getInstance(application).topicWordDao
+
+        var listTopicIdsToPlay = GameFragmentArgs.fromBundle(requireArguments()).topicIds
+
+        gameViewModelFactory = GameViewModelFactory(topicWordDao, listTopicIdsToPlay.toCollection(ArrayList()) )
         gameViewModel = ViewModelProvider(this,gameViewModelFactory).get(GameViewModel::class.java)
         binding.gameViewModelLayout = gameViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.cronometro.stop()
 
 
+        gameViewModel.allWords.observe(viewLifecycleOwner, Observer {listWords ->
+            gameViewModel.createListOfWords(listWords)
+        })
 
 
-        //updateScreen()//Se deja de usar cuando se implementó LiveData en GameViewModel
-/* Se dejan de usar por la línea: binding.lifecycleOwner = viewLifecycleOwner
-        gameViewModel.incorrectGuesses.observe(viewLifecycleOwner, Observer{ newValue ->
-            binding.adivinacionIncorrecta.text = "Incorrecta adivinación: $newValue"
-        })
-        gameViewModel.lives.observe(viewLifecycleOwner, Observer { newValue ->
-            binding.vidas.text = "Te quedan ${newValue} aún."
-        })
-        gameViewModel.secretWordDisplay.observe(viewLifecycleOwner, Observer { newValue ->
-            binding.palabra.text = newValue
-        })*/
         gameViewModel.gameOver.observe(viewLifecycleOwner, Observer{newValue ->
             if(newValue) {
 

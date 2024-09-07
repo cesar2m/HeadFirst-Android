@@ -4,15 +4,20 @@ import android.opengl.GLES30
 import android.os.SystemClock
 import android.util.Log
 import android.widget.Chronometer
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 
-class GameViewModel(listWordsToGame: Array<String>) :  ViewModel() {
+class GameViewModel(val ggDao: TopicWordDao, val listTopicIds: ArrayList<Long>) :  ViewModel() {
 
+    val allWords = ggDao.findAllWords()
 
-    private val listWords = createListOfWords(listWordsToGame)
-    private val secretWord = listWords.random().uppercase()
+    private val _secretWord = MutableLiveData<String>()
+    val secretWord: LiveData<String>
+        get() = _secretWord
+
     private var correctGuess = ""
 
 
@@ -43,7 +48,7 @@ class GameViewModel(listWordsToGame: Array<String>) :  ViewModel() {
 
     fun deriveSecretWordDisplay() : String {
         var display = ""
-        secretWord.forEach {
+        _secretWord.value?.forEach {
             display += checkLetter(it.toString())
         }
         return display
@@ -66,7 +71,7 @@ class GameViewModel(listWordsToGame: Array<String>) :  ViewModel() {
 
         if (guess.length == 1){
 
-            if (secretWord.contains(guess)){
+            if (_secretWord.value?.contains(guess) == true){
                 correctGuess += guess
                 _secretWordDisplay.value = deriveSecretWordDisplay()
             }else{
@@ -91,7 +96,7 @@ class GameViewModel(listWordsToGame: Array<String>) :  ViewModel() {
             _gameOver.value = true
         }
     }
-    fun isWon() = secretWord.equals(secretWordDisplay.value, true)
+    fun isWon() = _secretWord.value.equals(secretWordDisplay.value, true)
 
     fun isLost() = _lives.value ?: 0 <= 0
 
@@ -99,7 +104,8 @@ class GameViewModel(listWordsToGame: Array<String>) :  ViewModel() {
         var emojiSmile:  Int = 0x1F60E
         var emojiSad:  Int = 0x1F61B
         var emojiSmollSmile:  Int = 0x1F605
-        var message = "La palabra secreta fue $secretWord."
+        var secretW = secretWord.value
+        var message = "La palabra secreta fue $secretW."
         if (isWon()){
             message = "¡Ganaste " + getEmoji(emojiSmile)  + " ! "  +message
         } else  {
@@ -112,17 +118,22 @@ class GameViewModel(listWordsToGame: Array<String>) :  ViewModel() {
     fun getEmoji(unicode : Int) : String{
         return String(Character.toChars(unicode))
     }
-    fun createListOfWords(listWordsToGame: Array<String>): List<String> {
+    fun createListOfWords(listWords: List<Word>){
 
-        var mapListWords: HashMap<TopicWorrdsEnum,ArrayList<String>> = createTopics()
         var listaPalabrasFinal : ArrayList<String> =  arrayListOf()
-        var listTopics: ArrayList<TopicWorrdsEnum> = arrayListOf()
 
-        listWordsToGame.forEach { wg -> listTopics.add(TopicWorrdsEnum.valueOf(wg)) }
-        listTopics.forEach{ t -> listaPalabrasFinal.addAll(mapListWords.get(t) as Collection<String>)}
+        listTopicIds.forEach { topicId ->
+            listWords.forEach{w ->
+                if(w.topicId.equals(topicId)){
+                    listaPalabrasFinal.add(w.word)
+                }
+            }
+        }
 
-        return listaPalabrasFinal
+        _secretWord.value =  listaPalabrasFinal.random().uppercase()
     }
+
+
 
     fun containsTopic(valor : String): Boolean {
         return TopicWorrdsEnum.entries.contains(TopicWorrdsEnum.valueOf(valor))
@@ -135,23 +146,6 @@ class GameViewModel(listWordsToGame: Array<String>) :  ViewModel() {
 
     fun finishGame(){
         _gameOver.value = true
-    }
-
-    fun createTopics() : HashMap<TopicWorrdsEnum,ArrayList<String>> {
-
-        val comidas: ArrayList<String> = arrayListOf("Frijoles","Chiles Rellenos","Papas Fritas","Tacos","Tortas", "Tamales")
-        val frutas: ArrayList<String> = arrayListOf("Mango","Naranja","Aguacate","Durazno","Piña","Platano", "Papaya","Tuna")
-        val nombrePropios: ArrayList<String> = arrayListOf("Cesar","Isabel","Maria","Juan","Magadalena","Ana", "Noe","Victorino")
-        val so: ArrayList<String> = arrayListOf("Linux","Windows","Deepin","iOS","Android","Unix")
-
-        var topics: HashMap<TopicWorrdsEnum,ArrayList<String>> = mapOf<TopicWorrdsEnum,ArrayList<String>> (
-            TopicWorrdsEnum.FOOD to comidas,
-            TopicWorrdsEnum.FRUIT to frutas,
-            TopicWorrdsEnum.FIRST_NAME to nombrePropios,
-            TopicWorrdsEnum.SO to so
-        ) as HashMap<TopicWorrdsEnum, ArrayList<String>>
-
-        return topics
     }
 
 

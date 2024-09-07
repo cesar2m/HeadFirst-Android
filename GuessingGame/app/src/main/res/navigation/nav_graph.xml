@@ -24,8 +24,8 @@
         android:label="fragment_game"
         tools:layout="@layout/fragment_game" >
         <argument
-            android:name="palabrasParaJugar"
-            app:argType="string[]"
+            android:name="topicIds"
+            app:argType="long[]"
             />
         <action
             android:id="@+id/action_gameFragment_to_resultFragment"

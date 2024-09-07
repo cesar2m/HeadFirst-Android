@@ -15,7 +15,12 @@ interface TopicWordDao {
     @Insert
     suspend fun save(topic: Topic)
     @Insert
+    suspend fun saveAllTopics(listNewTopic: List<Topic>)
+
+    @Insert
     suspend fun save(word: Word)
+    @Insert
+    suspend fun saveAllWords(listNewWords: List<Word>)
 
     @Delete
     fun delete(word: Word)
@@ -24,15 +29,18 @@ interface TopicWordDao {
     fun update(topic: Topic)
 
 
-    @Transaction
     @Query("SELECT * FROM word_table " +
-            " WHERE topic_id  = :topicId " +
-            " ORDER BY word DESC ")
-    fun findByTopicId(topicId: Long): LiveData<Word>
+            " WHERE topic_id  = :topicId ")
+    fun findByTopicId(topicId: Long): LiveData<List<Word>>
 
     @Query("SELECT * FROM word_table ")
-    fun findAllWords(): LiveData<Word>
+    fun findAllWords(): LiveData<List<Word>>
 
-    @Query("SELECT * FROM topic_table ORDER BY topic_name DESC ")
-    fun findAllTopic(): LiveData<Topic>
+    @Query("SELECT * FROM topic_table " +
+            " WHERE topic_name  = :topicName ")
+    fun findByTopicName(topicName: String): Topic
+
+
+    @Query("SELECT * FROM topic_table ")
+    fun findAllTopic(): LiveData<List<Topic>>
 }
