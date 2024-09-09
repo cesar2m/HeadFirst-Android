@@ -1,9 +1,7 @@
 <resources>
-    <string name="app_name">Guessing Game</string>
+    <string name="app_name">Adivina la palabra</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="msjInicioChooseTopic">Elige un tema</string>
     <string name="strVidas">Te quedan  %s vidas.</string>
     <string name="strAdivinacionIncorrecta">Incorrectas %s.</string>
-    <string name="msjInicioChooseTopic">Adivina La Palabra</string>
-    <string name="questionInicioChooseTopic">Elige algunos temas de palbras</string>
 </resources>

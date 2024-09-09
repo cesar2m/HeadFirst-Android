@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.cesar2m.guessinggame.databinding.FragmentChooseTopicBinding
@@ -24,6 +25,10 @@ class ChooseTopicFragment : Fragment() {
         //return inflater.inflate(R.layout.fragment_choose_topic, container, false)
         _binding = FragmentChooseTopicBinding.inflate(inflater,container, false)
         var view = binding?.root
+
+        val toolbar = binding.toolbar
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+
 
         val application = requireNotNull(this.activity).application
         val topicWordDao = GuessingGameDataBase.getInstance(application).topicWordDao

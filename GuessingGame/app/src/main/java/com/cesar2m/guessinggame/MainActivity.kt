@@ -6,9 +6,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+
+
 
     lateinit var mainActivityViewModel: MainActivityViewModel
     lateinit var mainActivityViewModelFactory: MainActivityViewModelFactory
@@ -18,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         val topicWordDao = GuessingGameDataBase.getInstance(application).topicWordDao
         mainActivityViewModelFactory  = MainActivityViewModelFactory(topicWordDao)
 
@@ -26,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         mainActivityViewModel.listAllTopics.observe(this, Observer { listT ->
 
-            
+
             if( null != listT && !listT.isEmpty()){
                 mainActivityViewModel.listAllTopics.observe(this, Observer{ listW ->
                     if(null == listW || listW.isEmpty()) {
