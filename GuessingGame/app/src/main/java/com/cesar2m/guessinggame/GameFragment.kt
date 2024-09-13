@@ -5,10 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.cesar2m.guessinggame.databinding.FragmentGameBinding
+import com.google.android.material.appbar.MaterialToolbar
 
 /**
  * A simple [Fragment] subclass.
@@ -28,6 +30,9 @@ class GameFragment : Fragment() {
 
         _binding = FragmentGameBinding.inflate(inflater,container,false)
         val view = binding.root
+
+
+
         gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
         binding.gameViewModelLayout = gameViewModel
         binding.lifecycleOwner = viewLifecycleOwner
