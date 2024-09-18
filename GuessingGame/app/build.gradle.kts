@@ -1,14 +1,16 @@
+import org.jetbrains.kotlin.library.impl.createKotlinLibraryComponents
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("androidx.navigation.safeargs.kotlin")//No se debe de mover esta declaración
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 
 
 android {
     namespace = "com.cesar2m.guessinggame"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.cesar2m.guessinggame"
@@ -31,8 +33,11 @@ android {
     }
 
     buildFeatures {
-  
+        compose = true
         dataBinding = true
+    }
+    composeOptions{
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
 
     compileOptions {
@@ -46,6 +51,14 @@ android {
 
 dependencies {
 
+    implementation("androidx.compose.ui:ui:1.7.1")
+    implementation("androidx.compose.ui:ui-tooling:1.7.1")
+    implementation("androidx.compose.foundation:foundation:1.7.1")
+    implementation("androidx.compose.material:material:1.7.1")
+    implementation("androidx.compose.material:material-icons-core:1.7.1")
+    implementation("androidx.compose.material:material-icons-extended:1.7.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.1")
+
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.4.2")
     implementation("com.google.android.material:material:1.6.1")
@@ -58,3 +71,4 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
 }
+
