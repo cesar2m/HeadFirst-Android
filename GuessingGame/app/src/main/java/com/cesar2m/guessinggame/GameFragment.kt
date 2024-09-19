@@ -5,82 +5,131 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Arrangement
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import com.cesar2m.guessinggame.databinding.FragmentGameBinding
-import com.google.android.material.appbar.MaterialToolbar
 
-/**
- * A simple [Fragment] subclass.
- * Use the [GameFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class GameFragment : Fragment() {
 
-    private var _binding: FragmentGameBinding? = null
-    private val binding get() = _binding!!
     lateinit var gameViewModel: GameViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?
+                              ,savedInstanceState: Bundle?): View? {
 
-        //return inflater.inflate(R.layout.fragment_game, container, false)
-
-        _binding = FragmentGameBinding.inflate(inflater,container,false)
-        val view = binding.root
-
-
-
-        gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
-        binding.gameViewModelLayout = gameViewModel
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        //updateScreen()//Se deja de usar cuando se implementó LiveData en GameViewModel
-/* Se dejan de usar por la línea: binding.lifecycleOwner = viewLifecycleOwner
-        gameViewModel.incorrectGuesses.observe(viewLifecycleOwner, Observer{ newValue ->
-            binding.adivinacionIncorrecta.text = "Incorrecta adivinación: $newValue"
-        })
-        gameViewModel.lives.observe(viewLifecycleOwner, Observer { newValue ->
-            binding.vidas.text = "Te quedan ${newValue} aún."
-        })
-        gameViewModel.secretWordDisplay.observe(viewLifecycleOwner, Observer { newValue ->
-            binding.palabra.text = newValue
-        })*/
+    gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
         gameViewModel.gameOver.observe(viewLifecycleOwner, Observer{newValue ->
             if(newValue) {
                 val action = GameFragmentDirections
                     .actionGameFragmentToResultFragment(gameViewModel.wonLostMessage())
-                view.findNavController().navigate(action)
+                view?.findNavController()?.navigate(action)
             }
         })
 
-
-        binding.adivinaButton.setOnClickListener(){
-
-            gameViewModel.makeGuess(binding.adivinacion.text.toString().uppercase())
-            binding.adivinacion.text = null
-            //updateScreen() //Se deja de usar cuando se implementó LiveData en GameViewModel
-
+    return ComposeView(requireContext()).apply {
+                setContent {
+                    MaterialTheme {
+                        Surface {
+                            GameFragmentContent(gameViewModel)
+                        }
+                    }
+                }
+            }
         }
-        return view
+
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+
+    @Composable
+    fun GameFragmentContent(viewModel: GameViewModel) {
+        val guess = remember { mutableStateOf("") }
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center) {
+                SecretWordDisplay(viewModel = viewModel)
+            }
+            LivesLeftText(viewModel)
+            IncorrectGuessText(viewModel)
+            EnterGuess(guess.value) { guess.value = it }
+
+            Column(modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                GuessButton {
+                    viewModel.makeGuess(guess.value.uppercase())
+                    guess.value = ""
+                }
+                FinishGameButton {
+                    viewModel.finishGame()
+                }
+            }
+        }
     }
 
-    /*
-    //No es necesrio desde que se implementó LiveData en ViewModel
-    fun updateScreen(){
-        binding.palabra.text = gameViewModel.secretWordDisplay
-        binding.vidas.text = "Te quedan ${gameViewModel.lives} ."
-        binding.adivinacionIncorrecta.text = "Incorrecta adivinación: ${gameViewModel.incorrectGuesses}"
-    }*/
+    @Composable
+    fun IncorrectGuessText(viewModel: GameViewModel) {
+        val incorrectGuesses = viewModel.incorrectGuesses.observeAsState()
+        incorrectGuesses.value?.let {
+                Text(text = stringResource(R.string.strAdivinacionIncorrecta, it))
+        }
+    }
 
+    @Composable
+    fun SecretWordDisplay(viewModel: GameViewModel){
+        val display = viewModel.secretWordDisplay.observeAsState()
+        display.value?.let{
+            Text(text = it, letterSpacing = 0.1.em, fontSize = 36.sp)
+        }
+    }
 
+    @Composable
+    fun LivesLeftText(viewModel: GameViewModel){
+        val livesLeft = viewModel.lives.observeAsState()
+        livesLeft.value?.let{a ->
+            Text(text = stringResource(R.string.strVidas, a))
+        }
+    }
 
+    @Composable
+    fun FinishGameButton(clicked: () -> Unit) {
+        Button(onClick = clicked) {
+            Text(text = "No pude")
+        }
+    }
 
-}
+    @Composable
+    fun EnterGuess(guess: String, changed: (String) -> Unit) {
+        TextField(
+            value = guess,
+            label = { Text("Posible letra") },
+            onValueChange = changed
+        )
+    }
+
+    @Composable
+    fun GuessButton(clicked: () -> Unit) {
+        Button(onClick = clicked) {
+            Text("Adivina")
+        }
+    }
+
